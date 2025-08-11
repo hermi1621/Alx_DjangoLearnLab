@@ -1,14 +1,16 @@
-from .models import Author, Book, Librarian
+from .models import Library, Author, Librarian
 
-# Create an author
-author = Author.objects.create(name="George Orwell", birth_date="1903-06-25")
+# 1. List all books in a library
+def list_books_in_library(library_name):
+    library = Library.objects.get(name=library_name)
+    return library.books.all()
 
-# Create a book for the author
-book = Book.objects.create(title="Nineteen Eighty-Four", author=author)
+# 2. Query all books by a specific author
+def books_by_author(author_name):
+    author = Author.objects.get(name=author_name)
+    return author.books.all()
 
-# Create a librarian
-librarian = Librarian.objects.create(name="John Doe", library="Central Library")
-
-# Example queries
-all_books = Book.objects.all()
-books_by_orwell = Book.objects.filter(author__name="George Orwell")
+# 3. Retrieve the librarian for a library
+def get_librarian_for_library(library_name):
+    library = Library.objects.get(name=library_name)
+    return library.librarian
