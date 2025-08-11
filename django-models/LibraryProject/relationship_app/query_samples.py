@@ -1,16 +1,15 @@
-from .models import Library, Author, Librarian
+from .models import Library, Book, Librarian
 
-# 1. List all books in a library
+# List all books in a library
 def list_books_in_library(library_name):
     library = Library.objects.get(name=library_name)
-    return library.books.all()
+    return library.books.all()  # Assuming 'books' is the related_name in Book model's ForeignKey
 
-# 2. Query all books by a specific author
-def books_by_author(author_name):
-    author = Author.objects.get(name=author_name)
-    return author.books.all()
+# Query all books by a specific author
+def books_by_author(author):
+    return Book.objects.filter(author=author)
 
-# 3. Retrieve the librarian for a library
+# Retrieve the librarian for a library
 def get_librarian_for_library(library_name):
     library = Library.objects.get(name=library_name)
-    return library.librarian
+    return library.librarian  # Assuming OneToOneField with related_name='librarian'
