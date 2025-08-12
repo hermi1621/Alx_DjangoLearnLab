@@ -1,32 +1,19 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate, logout  # ✅ Added login import here
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.shortcuts import render
+from django.contrib.auth.decorators import user_passes_test
 
-# Registration view
-def register_view(request):
-    if request.method == "POST":
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()  # Save new user
-            login(request, user)  # ✅ Log in the new user after registration
-            return redirect('home')  # Change 'home' to your homepage URL name
-    else:
-        form = UserCreationForm()
-    return render(request, 'relationship_app/register.html', {'form': form})
+def check_role(role):
+    def decorator(user):
+        return hasattr(user, 'userprofile') and user.userprofile.role == role
+    return decorator
 
-# Login view
-def login_view(request):
-    if request.method == "POST":
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            login(request, user)  # ✅ Log in existing user
-            return redirect('home')
-    else:
-        form = AuthenticationForm()
-    return render(request, 'relationship_app/login.html', {'form': form})
+@user_passes_test(check_role('Admin'))
+def admin_view(request):
+    return render(request, 'django_models/admin_view.html')
 
-# Logout view
-def logout_view(request):
-    logout(request)
-    return render(request, 'relationship_app/logout.html')
+@user_passes_test(check_role('Librarian'))
+def librarian_view(request):
+    return render(request, 'django_models/librarian_view.html')
+
+@user_passes_test(check_role('Member'))
+def member_view(request):
+    return render(request, 'django_models/member_view.html')
