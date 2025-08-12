@@ -1,11 +1,12 @@
 from django.urls import path
 from . import views
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
-    # Existing URL patterns...
-
-    path('add_book/', views.add_book, name='add_book'),
-    path('edit_book/<int:pk>/', views.edit_book, name='edit_book'),
-    # You can also add delete_book if needed
-    path('delete_book/<int:pk>/', views.delete_book, name='delete_book'),
+    path('register/', views.register, name='register'),
+    path('login/', views.CustomLoginView.as_view(), name='login'),
+    path('logout/', views.CustomLogoutView.as_view(), name='logout'),
+    
+    # Add your other URLs here, e.g.:
+    # path('', views.home, name='home'),
 ]
