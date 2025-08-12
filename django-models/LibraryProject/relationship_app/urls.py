@@ -1,12 +1,9 @@
 from django.urls import path
+from django.contrib.auth.views import LoginView, LogoutView
 from . import views
-from django.contrib.auth import views as auth_views
 
 urlpatterns = [
+    path('login/', LoginView.as_view(template_name='relationship_app/login.html'), name='login'),
+    path('logout/', LogoutView.as_view(template_name='relationship_app/logout.html'), name='logout'),
     path('register/', views.register, name='register'),
-    path('login/', views.CustomLoginView.as_view(), name='login'),
-    path('logout/', views.CustomLogoutView.as_view(), name='logout'),
-    
-    # Add your other URLs here, e.g.:
-    # path('', views.home, name='home'),
 ]
