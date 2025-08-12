@@ -1,0 +1,15 @@
+# relationship_app/views.py
+from django.shortcuts import render
+from django.contrib.auth.decorators import user_passes_test
+from .models import UserProfile
+
+def is_member(user):
+    try:
+        return user.userprofile.role == 'Member'
+    except UserProfile.DoesNotExist:
+        return False
+
+@user_passes_test(is_member)
+def member_view(request):
+    # Render member_view.html template for authorized users
+    return render(request, 'relationship_app/member_view.html')
