@@ -1,18 +1,18 @@
 from django.db import models
 
 class Author(models.Model):
-    # Stores the author's name
+    # Author's name
     name = models.CharField(max_length=200)
 
     def __str__(self):
         return self.name
 
 class Book(models.Model):
-    # Title of the book
+    # Book title
     title = models.CharField(max_length=200)
-    # Publication year as integer
+    # Year published
     publication_year = models.IntegerField()
-    # Link to author - one author to many books
+    # Link to author (one-to-many)
     author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='books')
 
     def __str__(self):
