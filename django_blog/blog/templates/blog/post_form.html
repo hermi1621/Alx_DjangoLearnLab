@@ -4,3 +4,13 @@
     {{ form.as_p }}
     <button type="submit">{% if object %}Update{% else %}Create{% endif %}</button>
 </form>
+
+
+
+class PostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ['title', 'content', 'tags']  # include tags
+        widgets = {
+            'tags': TagWidget(),  # <-- use TagWidget here
+        }
