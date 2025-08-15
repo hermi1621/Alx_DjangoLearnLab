@@ -57,3 +57,15 @@ class PostForm(forms.ModelForm):
         model = Post
         fields = ['title', 'content', 'tags']  # include tags
 
+
+
+
+class PostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ['title', 'content', 'tags']  # include tags field
+        widgets = {
+            'tags': TagWidget(),  # <-- must be exactly like this
+        }
+
+
