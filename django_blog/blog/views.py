@@ -135,3 +135,28 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return reverse_lazy('post_detail', kwargs={'pk': self.object.post.pk})
 
 
+
+
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from .models import Comment
+from .forms import CommentForm
+
+# Class-based view for creating a comment
+class CommentCreateView(LoginRequiredMixin, CreateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = 'blog/comment_form.html'
+
+    def form_valid(self, form):
+        # Automatically assign the logged-in user as the author
+        form.instance.author = self.request.user
+        # Assign the post based on the URL parameter
+        form.instance.post_id = self.kwargs['post_id']
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        # Redirect back to the related post's detail page
+        return reverse_lazy('post_detail', kwargs={'pk': self.object.post.pk})
+
