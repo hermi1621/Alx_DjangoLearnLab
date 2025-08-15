@@ -191,4 +191,15 @@ class PostsByTagView(ListView):
         return Post.objects.filter(tags__in=[self.tag])
 
 
+def post_search(request):
+    query = request.GET.get('q', '')  # get the search query from URL parameters
+    results = Post.objects.filter(
+        Q(title__icontains=query) |       # search in title
+        Q(content__icontains=query) |     # search in content
+        Q(tags__name__icontains=query)    # search in tag names
+    ).distinct()  # remove duplicates if multiple tags match
+
+    return render(request, 'blog/search_results.html', {'results': results, 'query': query})
+
+
 
