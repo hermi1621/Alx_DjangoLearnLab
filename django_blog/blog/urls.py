@@ -55,3 +55,9 @@ urlpatterns += [
     path('comment/<int:pk>/delete/', CommentDeleteView.as_view(), name='comment_delete'),
 ]
 
+
+def form_valid(self, form):
+    form.instance.author = self.request.user
+    form.instance.post_id = self.kwargs['pk']  # matches the new URL pattern
+    return super().form_valid(form)
+
