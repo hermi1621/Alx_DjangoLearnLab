@@ -1,9 +1,4 @@
 INSTALLED_APPS = [
-    # Django defaults...
-    'rest_framework',
-    'api',
-]
-INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -11,6 +6,5 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',  # Django REST Framework
-    'api',  # Our API app
+    'api',  # Your app with models
 ]
-
