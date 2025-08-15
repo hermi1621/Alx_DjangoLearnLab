@@ -160,3 +160,20 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
         # Redirect back to the related post's detail page
         return reverse_lazy('post_detail', kwargs={'pk': self.object.post.pk})
 
+
+
+
+
+
+
+
+
+from django import forms
+from .models import Post
+
+class PostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ['title', 'content', 'tags']  # include tags
+
+
