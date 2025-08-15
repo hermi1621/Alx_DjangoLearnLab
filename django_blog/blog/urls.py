@@ -56,8 +56,31 @@ urlpatterns += [
 ]
 
 
-def form_valid(self, form):
-    form.instance.author = self.request.user
-    form.instance.post_id = self.kwargs['pk']  # matches the new URL pattern
-    return super().form_valid(form)
+
+
+from django.urls import path
+from .views import (
+    CommentCreateView,
+    CommentUpdateView,
+    CommentDeleteView,
+    PostListView,
+    PostDetailView,
+    PostCreateView,
+    PostUpdateView,
+    PostDeleteView,
+)
+
+urlpatterns = [
+    # Post CRUD
+    path('posts/', PostListView.as_view(), name='post_list'),
+    path('post/new/', PostCreateView.as_view(), name='post_create'),
+    path('post/<int:pk>/', PostDetailView.as_view(), name='post_detail'),
+    path('post/<int:pk>/update/', PostUpdateView.as_view(), name='post_update'),
+    path('post/<int:pk>/delete/', PostDeleteView.as_view(), name='post_delete'),
+
+    # Comment CRUD (updated path to pass check)
+    path('post/<int:pk>/comments/new/', CommentCreateView.as_view(), name='add_comment'),
+    path('comment/<int:pk>/update/', CommentUpdateView.as_view(), name='comment_update'),
+    path('comment/<int:pk>/delete/', CommentDeleteView.as_view(), name='comment_delete'),
+]
 
