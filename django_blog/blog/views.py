@@ -177,3 +177,18 @@ class PostForm(forms.ModelForm):
         fields = ['title', 'content', 'tags']  # include tags
 
 
+
+from django.views.generic import ListView
+from .models import Post
+from taggit.models import Tag
+
+class PostsByTagView(ListView):
+    model = Post
+    template_name = 'blog/posts_by_tag.html'
+
+    def get_queryset(self):
+        self.tag = Tag.objects.get(slug=self.kwargs['tag_slug'])
+        return Post.objects.filter(tags__in=[self.tag])
+
+
+
