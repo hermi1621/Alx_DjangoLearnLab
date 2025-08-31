@@ -145,3 +145,38 @@ class UnlikePostView(APIView):
             return Response({"status": "unliked"})
         return Response({"status": "not liked"})
 
+
+from rest_framework import status
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from django.shortcuts import get_object_or_404
+from .models import Post, Like
+from accounts.models import CustomUser  # if needed
+
+class LikePostView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        # Retrieve the post or return 404 if not found
+        post = get_object_or_404(Post, pk=pk)
+
+        # Create a like if not already liked
+        like, created = Like.objects.get_or_create(user=request.user, post=post)
+        if created:
+            return Response({"detail": "Post liked"}, status=status.HTTP_201_CREATED)
+        return Response({"detail": "Post already liked"}, status=status.HTTP_200_OK)
+
+class UnlikePostView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        post = get_object_or_404(Post, pk=pk)
+
+        # Delete the like if it exists
+        like = Like.objects.filter(user=request.user, post=post)
+        if like.exists():
+            like.delete()
+            return Response({"detail": "Post unliked"}, status=status.HTTP_200_OK)
+        return Response({"detail": "Post was not liked"}, status=status.HTTP_400_BAD_REQUEST)
+
