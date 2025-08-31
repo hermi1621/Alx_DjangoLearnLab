@@ -1,12 +1,28 @@
+from django.contrib.auth import get_user_model
+from rest_framework import serializers
+from rest_framework.authtoken.models import Token
 
-from django.contrib.auth.models import AbstractUser
-from django.db import models
+User = get_user_model()
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'bio', 'profile_picture']
 
-class CustomUser(AbstractUser):
-    bio = models.TextField(blank=True, null=True)
-    profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
-    followers = models.ManyToManyField('self', symmetrical=False, related_name='following', blank=True)
+class RegisterSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
 
-    def __str__(self):
-        return self.username
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password']
+
+    def create(self, validated_data):
+        # create user with hashed password
+        user = User.objects.create_user(
+            username=validated_data['username'],
+            email=validated_data.get('email'),
+            password=validated_data['password']
+        )
+        # create token for user
+        Token.objects.create(user=user)
+        return user
