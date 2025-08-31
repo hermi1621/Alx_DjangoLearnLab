@@ -70,3 +70,39 @@ class FeedView(APIView):
         serializer = PostSerializer(posts, many=True)
 
         return Response(serializer.data)
+
+
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from .models import Post, Like
+from notifications.models import Notification
+from django.contrib.contenttypes.models import ContentType
+
+class LikePostView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        post = Post.objects.get(pk=pk)
+        like, created = Like.objects.get_or_create(user=request.user, post=post)
+
+        if created:
+            # Create notification
+            Notification.objects.create(
+                recipient=post.author,
+                actor=request.user,
+                verb="liked your post",
+                target=post
+            )
+            return Response({"status": "liked"})
+        return Response({"status": "already liked"})
+
+class UnlikePostView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        post = Post.objects.get(pk=pk)
+        deleted, _ = Like.objects.filter(user=request.user, post=post).delete()
+        if deleted:
+            return Response({"status": "unliked"})
+        return Response({"status": "not liked"})
