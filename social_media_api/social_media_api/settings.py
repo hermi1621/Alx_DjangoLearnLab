@@ -13,4 +13,7 @@ INSTALLED_APPS = [
     
     # Local apps
     'accounts',
+    'posts',   # ✅ add this
+    'rest_framework',
+    
 ]
