@@ -44,3 +44,29 @@ class FeedView(generics.GenericAPIView):
         posts = Post.objects.filter(author__in=followed_users).order_by('-created_at')
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
+
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from accounts.models import CustomUser  # your user model
+from .models import Post
+from .serializers import PostSerializer
+
+class FeedView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        # Get the current logged-in user
+        user = request.user
+
+        # Get the users that the current user is following
+        following_users = user.following.all()
+
+        # Retrieve posts from followed users, ordered by creation date (most recent first)
+        posts = Post.objects.filter(author__in=following_users).order_by('-created_at')
+
+        # Serialize the posts
+        serializer = PostSerializer(posts, many=True)
+
+        return Response(serializer.data)
