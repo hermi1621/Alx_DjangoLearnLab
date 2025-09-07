@@ -1,4 +1,3 @@
-# social_media_api/posts/urls.py
 from django.urls import path
 from .views import like_post, unlike_post
 
