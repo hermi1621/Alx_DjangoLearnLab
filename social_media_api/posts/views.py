@@ -17,7 +17,6 @@ def like_post(request, pk):
 
     Like.objects.create(user=request.user, post=post)
 
-    # Notification
     if post.author != request.user:
         Notification.objects.create(
             recipient=post.author,
